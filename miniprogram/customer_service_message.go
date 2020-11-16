@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dawndiy/go-wechat/util/upload"
+	"github.com/dawndiy/go-wechat/pkg/upload"
 )
 
 // CustomerServiceMessageService 客服消息服务
