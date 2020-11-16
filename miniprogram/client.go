@@ -10,7 +10,7 @@ import (
 
 	"github.com/dawndiy/go-wechat/httpclient"
 	"github.com/dawndiy/go-wechat/internal"
-	"github.com/dawndiy/go-wechat/util/token"
+	"github.com/dawndiy/go-wechat/pkg/token"
 	"github.com/google/go-querystring/query"
 )
 

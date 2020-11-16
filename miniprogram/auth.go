@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/dawndiy/go-wechat/pkg/token"
 	"github.com/google/go-querystring/query"
 )
 
@@ -58,17 +59,11 @@ func (s *AuthService) Code2Session(ctx context.Context, jsCode, appid, secret st
 
 }
 
-// AccessToken 接口调用凭据
-type AccessToken struct {
-	Value     string `json:"access_token"` // 获取到的凭证
-	ExpiresIn int64  `json:"expires_in"`   // 凭证有效时间，单位：秒。目前是7200秒之内的值。
-}
-
 // GetAccessToken 获取小程序全局唯一后台接口调用凭据（access_token）。
 // 调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存。
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html
-func (s *AuthService) GetAccessToken(ctx context.Context, appid, secret string) (*AccessToken, error) {
+func (s *AuthService) GetAccessToken(ctx context.Context, appid, secret string) (*token.AccessToken, error) {
 	u, _ := url.Parse(apiToken)
 	v := url.Values{}
 	v.Set("grant_type", tokenGrantType)
@@ -81,7 +76,7 @@ func (s *AuthService) GetAccessToken(ctx context.Context, appid, secret string) 
 		return nil, err
 	}
 
-	accessToken := new(AccessToken)
+	accessToken := new(token.AccessToken)
 	_, err = s.client.Do(req, accessToken)
 
 	return accessToken, err
