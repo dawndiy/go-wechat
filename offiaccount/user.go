@@ -5,6 +5,19 @@ import (
 	"net/url"
 )
 
+// 用户关注渠道
+const (
+	UserAddSceneSearch             = "ADD_SCENE_SEARCH"               //  公众号搜索
+	UserAddSceneAccountMigration   = "ADD_SCENE_ACCOUNT_MIGRATION"    //  公众号迁移
+	UserAddSceneProfileCard        = "ADD_SCENE_PROFILE_CARD"         //  名片分享
+	UserAddSceneQRCode             = "ADD_SCENE_QR_CODE"              //  扫描二维码
+	UserAddSceneProfileLink        = "ADD_SCENE_PROFILE_LINK"         //  图文页内名称点击
+	UserAddSceneProfileItem        = "ADD_SCENE_PROFILE_ITEM"         //  图文页右上角菜单
+	UserAddScenePaid               = "ADD_SCENE_PAID"                 //  支付后关注
+	UserAddSceneWeChatAdvertisment = "ADD_SCENE_WECHAT_ADVERTISEMENT" //  微信广告
+	UserAddSceneOthers             = "ADD_SCENE_OTHERS"               //  其他
+)
+
 // UserService 用户管理服务
 type UserService service
 
@@ -86,4 +99,59 @@ func (s *UserService) Info(ctx context.Context, openID string, lang string) (*Us
 	_, err = s.client.Do(req, info)
 
 	return info, err
+}
+
+// UpdateRemark 设置用户备注名
+//
+// 开发者可以通过该接口对指定用户设置备注名，该接口暂时开放给微信认证的服务号
+//
+// 文档: https://developers.weixin.qq.com/doc/offiaccount/User_Management/Configuring_user_notes.html
+func (s *UserService) UpdateRemark(ctx context.Context, openID, remark string) error {
+	u, err := s.client.apiURL(ctx, "cgi-bin/user/info/updateremark", nil)
+	if err != nil {
+		return err
+	}
+	body := map[string]string{
+		"openid": openID,
+		"remark": remark,
+	}
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
+	if err != nil {
+		return err
+	}
+	_, err = s.client.Do(req, nil)
+	return err
+}
+
+// UserOpenIDLang 基本信息请求
+type UserOpenIDLang struct {
+	// 用户的标识，对当前公众号唯一
+	OpenID string `json:"openid"`
+	// 国家地区语言版本，zh_CN 简体，zh_TW 繁体，en 英语，默认为zh-CN
+	// 可选
+	Lang string `json:"lang"`
+}
+
+// BatchGet 批量获取用户基本信息
+//
+// 开发者可通过该接口来批量获取用户基本信息。最多支持一次拉取100条
+//
+// 文档: https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html
+func (s *UserService) BatchGet(ctx context.Context, list []UserOpenIDLang) ([]UserInfo, error) {
+	u, err := s.client.apiURL(ctx, "cgi-bin/user/info/batchget", nil)
+	if err != nil {
+		return nil, err
+	}
+	body := map[string]interface{}{
+		"user_list": list,
+	}
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+	var data struct {
+		UserInfoList []UserInfo `json:"user_info_list"`
+	}
+	_, err = s.client.Do(req, &data)
+	return data.UserInfoList, err
 }
