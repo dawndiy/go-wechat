@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dawndiy/go-wechat/util/token"
+	"github.com/dawndiy/go-wechat/pkg/token"
 )
 
 // ClientOption 客户端设置选项

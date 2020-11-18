@@ -2,11 +2,11 @@ package miniprogram
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 
+	"github.com/dawndiy/go-wechat/pkg/message"
 	"github.com/dawndiy/go-wechat/pkg/upload"
 )
 
@@ -40,77 +40,15 @@ func (s *CustomerServiceMessageService) GetTempMedia(
 	return resp.Header, b, err
 }
 
-// 客服发送消息类别
-const (
-	CSMSendTypeText            = "text"
-	CSMSendTypeImage           = "image"
-	CSMSendTypeLink            = "link"
-	CSMSendTypeMiniProgramPage = "miniprogrampage"
-)
-
-// MessageText 文本消息
-type MessageText struct {
-	Content string `json:"content"` // 文本消息内容
-}
-
-// MessageImage 图片消息
-type MessageImage struct {
-	MediaID string `json:"media_id"` // 发送的图片的媒体ID，通过 新增素材接口 上传图片文件获得。
-}
-
-// MessageLink 图文链接
-type MessageLink struct {
-	// 消息标题
-	Title string `json:"title"`
-	// 图文链接消息
-	Description string `json:"description"`
-	// 图文链接消息被点击后跳转的链接
-	URL string `json:"url"`
-	// 图文链接消息的图片链接，支持 JPG、PNG 格式，较好的效果为大图 640 X 320，小图 80 X 80
-	ThumbURL string `json:"thumb_url"`
-}
-
-// MessageMiniProgram 小程序卡片
-type MessageMiniProgram struct {
-	// 消息标题
-	Title string `json:"title"`
-	// 小程序的页面路径，跟app.json对齐，支持参数，比如pages/index/index?foo=bar
-	PagePath string `json:"page_path"`
-	// 小程序消息卡片的封面， image 类型的 media_id，通过 新增素材接口 上传图片文件获得，建议大小为 520*416
-	ThumbMediaID string `json:"thumb_media_id"`
-}
-
 // Send 发送客服消息给用户
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.send.html
-func (s *CustomerServiceMessageService) Send(ctx context.Context, toUser, msgType string, message interface{}) error {
-	switch msgType {
-	case CSMSendTypeText,
-		CSMSendTypeImage,
-		CSMSendTypeLink,
-		CSMSendTypeMiniProgramPage:
-	default:
-		return fmt.Errorf("unknown msgType '%s'", msgType)
-	}
+func (s *CustomerServiceMessageService) Send(ctx context.Context, toUser string, msg message.Message) error {
 	body := map[string]interface{}{
-		"touser":  toUser,
-		"msgtype": msgType,
+		"touser":   toUser,
+		"msgtype":  msg.Type(),
+		msg.Type(): msg,
 	}
-	msgKey := ""
-	switch message.(type) {
-	case MessageText:
-		msgKey = "text"
-	case MessageImage:
-		msgKey = "image"
-	case MessageLink:
-		msgKey = "link"
-	case MessageMiniProgram:
-		msgKey = "miniprogrampage"
-	default:
-		return fmt.Errorf("unknown message object")
-	}
-	body[msgKey] = message
-
 	u, err := s.client.apiURL(ctx, "cgi-bin/message/custom/send", nil)
 	if err != nil {
 		return err
@@ -125,24 +63,13 @@ func (s *CustomerServiceMessageService) Send(ctx context.Context, toUser, msgTyp
 	return err
 }
 
-// 客服输入状态
-const (
-	CSMTyping       = "Typing"
-	CSMCancelTyping = "CancelTyping"
-)
-
 // SetTyping 下发客服当前输入状态给用户
 //
 // command, 命令, Typing 对用户下发"正在输入"状态, CancelTyping 取消对用户的"正在输入"状态
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html
-func (s *CustomerServiceMessageService) SetTyping(ctx context.Context, toUser, command string) error {
-
-	switch command {
-	case CSMTyping, CSMCancelTyping:
-	default:
-		return fmt.Errorf("unknown command '%s'", command)
-	}
+func (s *CustomerServiceMessageService) SetTyping(
+	ctx context.Context, toUser string, command message.StatusCommand) error {
 
 	u, err := s.client.apiURL(ctx, "cgi-bin/message/custom/send", nil)
 	if err != nil {
@@ -151,7 +78,7 @@ func (s *CustomerServiceMessageService) SetTyping(ctx context.Context, toUser, c
 
 	body := map[string]string{
 		"touser":  toUser,
-		"command": command,
+		"command": string(command),
 	}
 
 	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)

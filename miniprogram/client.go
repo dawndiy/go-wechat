@@ -66,6 +66,11 @@ func NewClient(opts ...ClientOption) *Client {
 	return c
 }
 
+// Use 使用请求中间件
+func (c *Client) Use(middlwares ...func(httpclient.RequestHandler) httpclient.RequestHandler) {
+	c.client.Use(middlwares...)
+}
+
 // NewRequest 新建一个接口请求
 func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
 	u, err := c.baseURL.Parse(urlStr)
