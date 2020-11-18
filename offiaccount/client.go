@@ -34,10 +34,16 @@ type Client struct {
 	appid  string // 公众号 appid
 	secret string // 公众号 appSecret
 
-	Base    *BaseService
+	Base *BaseService
+	// 用户管理
+	User *UserService
+	// 帐号管理
 	Account *AccountService
+	// 消息管理
 	Message struct {
-		CustomService   *MessageCustomService
+		// 客服消息
+		CustomService *MessageCustomService
+		// 模板消息
 		TemplateService *MessageTemplateService
 	}
 }
@@ -54,6 +60,7 @@ func NewClient(opts ...ClientOption) *Client {
 
 	c.common.client = c
 	c.Base = (*BaseService)(&c.common)
+	c.User = (*UserService)(&c.common)
 	c.Account = (*AccountService)(&c.common)
 	c.Message.CustomService = (*MessageCustomService)(&c.common)
 	c.Message.TemplateService = (*MessageTemplateService)(&c.common)
