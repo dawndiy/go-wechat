@@ -52,7 +52,7 @@ type UserInfo struct {
 	// 公众号运营者可在微信公众平台用户管理界面对粉丝添加备注
 	Remark string `json:"remark"`
 	// 用户所在的分组ID（兼容旧的用户分组接口）
-	GroupID string `json:"groupid"`
+	GroupID int `json:"groupid"`
 	// 用户被打上的标签ID列表
 	TagIDList []int `json:"tagid_list"`
 	// 返回用户关注的渠道来源，
