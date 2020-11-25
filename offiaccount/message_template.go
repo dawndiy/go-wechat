@@ -115,7 +115,7 @@ type MessageTemplateMsgMiniProgram struct {
 // 文档: https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Template_Message_Interface.html#5
 func (s *MessageTemplateService) Send(ctx context.Context, msg *MessageTemplateMsg) (int64, error) {
 
-	u, err := s.client.apiURL(ctx, "cgi-bin/template/send", nil)
+	u, err := s.client.apiURL(ctx, "cgi-bin/message/template/send", nil)
 	if err != nil {
 		return 0, err
 	}
