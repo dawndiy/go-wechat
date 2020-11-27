@@ -12,7 +12,7 @@ type WXACodeService service
 // QRCodeBaseConfig 二维码基础配置
 type QRCodeBaseConfig struct {
 	// 二维码的宽度，单位 px。最小 280px，最大 1280px
-	With int `json:"with,omitempty"`
+	Width int `json:"width,omitempty"`
 	// 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 	AutoColor bool `json:"auto_color,omitempty"`
 	// auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
