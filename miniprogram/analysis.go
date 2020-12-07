@@ -116,7 +116,7 @@ type DailySummary struct {
 // beginDate 开始日期。endDate 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getDailySummary.html
-func (s *AnalysisService) GetDailySummary(ctx context.Context, beginDate, endDate string) ([]*DailySummary, error) {
+func (s *AnalysisService) GetDailySummary(ctx context.Context, beginDate, endDate string) ([]DailySummary, error) {
 
 	u, err := s.client.apiURL(ctx, "datacube/getweanalysisappiddailysummarytrend", nil)
 	if err != nil {
@@ -133,7 +133,7 @@ func (s *AnalysisService) GetDailySummary(ctx context.Context, beginDate, endDat
 	}
 
 	var data struct {
-		List []*DailySummary `json:"list"`
+		List []DailySummary `json:"list"`
 	}
 
 	_, err = s.client.Do(req, &data)
@@ -142,14 +142,14 @@ func (s *AnalysisService) GetDailySummary(ctx context.Context, beginDate, endDat
 
 // VisitTrend 访问趋势数据
 type VisitTrend struct {
-	RefDate         string `json:"ref_date"`          // 日期。格式为 yyyymmdd
-	SessionCnt      int64  `json:"session_cnt"`       // 打开次数
-	VisitPV         int64  `json:"visit_pv"`          // 访问次数
-	VisitUV         int64  `json:"visit_uv"`          // 访问人数
-	VisitUVNew      int64  `json:"visit_uv_new"`      // 新用户数
-	StayTimeUV      int64  `json:"stay_time_uv"`      // 人均停留时长 (浮点型，单位：秒)
-	StayTimeSession int64  `json:"stay_time_session"` // 次均停留时长 (浮点型，单位：秒)
-	VisitDepth      int64  `json:"visit_depth"`       // 平均访问深度 (浮点型)
+	RefDate         string  `json:"ref_date"`          // 日期。格式为 yyyymmdd
+	SessionCnt      int64   `json:"session_cnt"`       // 打开次数
+	VisitPV         int64   `json:"visit_pv"`          // 访问次数
+	VisitUV         int64   `json:"visit_uv"`          // 访问人数
+	VisitUVNew      int64   `json:"visit_uv_new"`      // 新用户数
+	StayTimeUV      float64 `json:"stay_time_uv"`      // 人均停留时长 (浮点型，单位：秒)
+	StayTimeSession float64 `json:"stay_time_session"` // 次均停留时长 (浮点型，单位：秒)
+	VisitDepth      float64 `json:"visit_depth"`       // 平均访问深度 (浮点型)
 }
 
 // GetDailyVisitTrend 获取用户访问小程序数据日趋势
@@ -157,7 +157,7 @@ type VisitTrend struct {
 // beginDate 开始日期。endDate 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getDailyVisitTrend.html
-func (s *AnalysisService) GetDailyVisitTrend(ctx context.Context, beginDate, endDate string) ([]*VisitTrend, error) {
+func (s *AnalysisService) GetDailyVisitTrend(ctx context.Context, beginDate, endDate string) ([]VisitTrend, error) {
 
 	u, err := s.client.apiURL(ctx, "datacube/getweanalysisappiddailyvisittrend", nil)
 	if err != nil {
@@ -174,7 +174,7 @@ func (s *AnalysisService) GetDailyVisitTrend(ctx context.Context, beginDate, end
 	}
 
 	var data struct {
-		List []*VisitTrend `json:"list"`
+		List []VisitTrend `json:"list"`
 	}
 
 	_, err = s.client.Do(req, &data)
@@ -186,7 +186,7 @@ func (s *AnalysisService) GetDailyVisitTrend(ctx context.Context, beginDate, end
 // beginDate 开始日期，为自然月第一天。endDate 结束日期，为自然月最后一天，限定查询一个月的数据。格式为 yyyymmdd
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getMonthlyVisitTrend.html
-func (s *AnalysisService) GetMonthlyVisitTrend(ctx context.Context, beginDate, endDate string) ([]*VisitTrend, error) {
+func (s *AnalysisService) GetMonthlyVisitTrend(ctx context.Context, beginDate, endDate string) ([]VisitTrend, error) {
 
 	u, err := s.client.apiURL(ctx, "datacube/getweanalysisappidmonthlyvisittrend", nil)
 	if err != nil {
@@ -203,7 +203,7 @@ func (s *AnalysisService) GetMonthlyVisitTrend(ctx context.Context, beginDate, e
 	}
 
 	var data struct {
-		List []*VisitTrend `json:"list"`
+		List []VisitTrend `json:"list"`
 	}
 
 	_, err = s.client.Do(req, &data)
@@ -215,7 +215,7 @@ func (s *AnalysisService) GetMonthlyVisitTrend(ctx context.Context, beginDate, e
 // beginDate 开始日期，为周一日期。endDate 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getWeeklyVisitTrend.html
-func (s *AnalysisService) GetWeeklyVisitTrend(ctx context.Context, beginDate, endDate string) ([]*VisitTrend, error) {
+func (s *AnalysisService) GetWeeklyVisitTrend(ctx context.Context, beginDate, endDate string) ([]VisitTrend, error) {
 
 	u, err := s.client.apiURL(ctx, "datacube/getweanalysisappidweeklyvisittrend", nil)
 	if err != nil {
@@ -232,7 +232,7 @@ func (s *AnalysisService) GetWeeklyVisitTrend(ctx context.Context, beginDate, en
 	}
 
 	var data struct {
-		List []*VisitTrend `json:"list"`
+		List []VisitTrend `json:"list"`
 	}
 
 	_, err = s.client.Do(req, &data)
@@ -259,9 +259,10 @@ type Portrait struct {
 
 // PortraitAttr 画像属性
 type PortraitAttr struct {
-	ID                  int   `json:"id"`                     // 属性值id
-	Name                int   `json:"name"`                   // 属性值名称，与id对应。如属性为 province 时，返回的属性值名称包括「广东」等。
-	AccessSourceVisitUV int64 `json:"access_source_visit_uv"` // 该场景访问uv
+	ID   int    `json:"id"`   // 属性值id
+	Name string `json:"name"` // 属性值名称，与id对应。如属性为 province 时，返回的属性值名称包括「广东」等。
+	//AccessSourceVisitUV int64  `json:"access_source_visit_uv"` // 该场景访问uv NOTE: 微信文档错误
+	Value int64 `json:"value"` // 该场景访问uv
 }
 
 // GetUserPortrait 获取小程序新增或活跃用户的画像分布数据。
@@ -409,13 +410,13 @@ func (s *AnalysisService) GetVisitDistribution(ctx context.Context, beginDate, e
 // VisitPage 访问页面数据
 type VisitPage struct {
 	PagePath       string `json:"page_path"`        // 页面路径
-	PageVisitPV    string `json:"page_visit_pv"`    // 访问次数
-	PageVisitUV    string `json:"page_visit_uv"`    // 访问人数
-	PageStaytimePV string `json:"page_staytime_pv"` // 次均停留时长
-	EntryPagePV    string `json:"entry_page_pv"`    // 进入页次数
-	ExitPagePV     string `json:"exit_page_pv"`     // 退出页次数
-	PageSharePV    string `json:"page_share_pv"`    // 转发次数
-	PageShareUV    string `json:"page_share_uv"`    // 转发人数
+	PageVisitPV    int64  `json:"page_visit_pv"`    // 访问次数
+	PageVisitUV    int64  `json:"page_visit_uv"`    // 访问人数
+	PageStaytimePV int64  `json:"page_staytime_pv"` // 次均停留时长
+	EntryPagePV    int64  `json:"entry_page_pv"`    // 进入页次数
+	ExitPagePV     int64  `json:"exit_page_pv"`     // 退出页次数
+	PageSharePV    int64  `json:"page_share_pv"`    // 转发次数
+	PageShareUV    int64  `json:"page_share_uv"`    // 转发人数
 }
 
 // GetVisitPage 访问页面。
@@ -424,7 +425,7 @@ type VisitPage struct {
 // beginDate 开始日期。endDate 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getVisitPage.html
-func (s *AnalysisService) GetVisitPage(ctx context.Context, beginDate, endDate string) ([]*VisitPage, error) {
+func (s *AnalysisService) GetVisitPage(ctx context.Context, beginDate, endDate string) ([]VisitPage, error) {
 
 	u, err := s.client.apiURL(ctx, "datacube/getweanalysisappidvisitpage", nil)
 	if err != nil {
@@ -441,7 +442,7 @@ func (s *AnalysisService) GetVisitPage(ctx context.Context, beginDate, endDate s
 	}
 
 	var data struct {
-		List []*VisitPage `json:"list"` // 数据列表
+		List []VisitPage `json:"list"` // 数据列表
 	}
 
 	_, err = s.client.Do(req, &data)
