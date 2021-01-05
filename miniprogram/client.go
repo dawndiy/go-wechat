@@ -42,6 +42,7 @@ type Client struct {
 	Analysis               *AnalysisService
 	WXACode                *WXACodeService
 	CustomerServiceMessage *CustomerServiceMessageService
+	SubscribeMessage       *SubscribeMessageService
 }
 
 // NewClient 新建一个新的小程序服务端接口客户端
@@ -62,6 +63,7 @@ func NewClient(opts ...ClientOption) *Client {
 	c.Analysis = (*AnalysisService)(&c.common)
 	c.WXACode = (*WXACodeService)(&c.common)
 	c.CustomerServiceMessage = (*CustomerServiceMessageService)(&c.common)
+	c.SubscribeMessage = (*SubscribeMessageService)(&c.common)
 
 	return c
 }
