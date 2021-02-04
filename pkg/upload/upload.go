@@ -64,13 +64,10 @@ type Result struct {
 	MediaID string `json:"media_id"`
 
 	// 媒体文件上传时间戳
-	CreatedAt string `json:"created_at"`
+	CreatedAt int64 `json:"created_at"`
 }
 
 // GetCreatedAt 返回 time.Time 类型
 func (r *Result) GetCreatedAt() time.Time {
-	if i, err := strconv.ParseInt(r.CreatedAt, 10, 64); err == nil {
-		return time.Unix(i, 0)
-	}
-	return time.Time{}
+	return time.Unix(r.CreatedAt, 0)
 }
