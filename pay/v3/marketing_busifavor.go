@@ -317,7 +317,7 @@ func (s *MarketingBusifavorService) StockCreate(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.StockID, data.CreateTime, nil
+	return data.StockID, data.CreateTime, err
 }
 
 // 商家券批次状态
@@ -409,7 +409,7 @@ func (s *MarketingBusifavorService) StockDetail(ctx context.Context, stockID str
 	}
 	detail := new(BusifavorStockDetail)
 	_, err = s.client.Do(req, detail)
-	return detail, nil
+	return detail, err
 }
 
 // BusifavorCouponUseRequest 核销用户券请求
@@ -453,7 +453,7 @@ func (s *MarketingBusifavorService) CouponsUse(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.StockID, data.OpenID, data.WeChatPayUseTime, nil
+	return data.StockID, data.OpenID, data.WeChatPayUseTime, err
 }
 
 // BusifavorUserCouponsOptions 根据过滤条件查询用户券
@@ -692,7 +692,7 @@ func (s *MarketingBusifavorService) CouponsAssociate(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.WeChatPayAssociateTime, nil
+	return data.WeChatPayAssociateTime, err
 }
 
 // CouponsDisassociate 取消关联订单信息
@@ -721,7 +721,7 @@ func (s *MarketingBusifavorService) CouponsDisassociate(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.WeChatPayAssociateTime, nil
+	return data.WeChatPayAssociateTime, err
 }
 
 // BusifavorStockBudgetUpdateRequest 修改批次预算请求
@@ -762,7 +762,7 @@ func (s *MarketingBusifavorService) StockBudgetUpdate(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.MaxCoupons, data.MaxCouponsByDay, nil
+	return data.MaxCoupons, data.MaxCouponsByDay, err
 }
 
 // BusifavorStockUpdateRequest 商家券基本信息修改请求
@@ -829,7 +829,7 @@ func (s *MarketingBusifavorService) CouponsReturn(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.WeChatPayReturnTime, nil
+	return data.WeChatPayReturnTime, err
 }
 
 // ConponsDeactivate 使券失效
@@ -856,5 +856,5 @@ func (s *MarketingBusifavorService) ConponsDeactivate(
 	}
 	_, err = s.client.Do(req, &data)
 
-	return data.WeChatPayDeactivateTime, nil
+	return data.WeChatPayDeactivateTime, err
 }
