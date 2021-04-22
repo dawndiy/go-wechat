@@ -63,10 +63,10 @@ type BusifavorStockCreateRequest struct {
 
 	// 自定义入口 可选
 	// 卡详情页面，可选择多种入口引导用户。
-	CustomEntrance *BusifavorCustomEntrance `json:"custom_entrance"`
+	CustomEntrance *BusifavorCustomEntrance `json:"custom_entrance,omitempty"`
 
 	// 样式信息 可选
-	DisplayPatternInfo *BusifavorDisplayPatternInfo `json:"display_pattern_info"`
+	DisplayPatternInfo *BusifavorDisplayPatternInfo `json:"display_pattern_info,omitempty"`
 
 	// 券code模式 必填
 	// 枚举值：
@@ -76,7 +76,7 @@ type BusifavorStockCreateRequest struct {
 	CouponCodeMode string `json:"coupon_code_mode"`
 
 	// 事件通知配置 可选
-	NotifyConfig *BusifavorNotifyConfig `json:"notify_config"`
+	NotifyConfig *BusifavorNotifyConfig `json:"notify_config,omitempty"`
 }
 
 // 商家券核销方式
@@ -135,8 +135,10 @@ type BusifavorCouponAvailableTime struct {
 	// 示例值：3
 	AvaliableDayAfterReceive int `json:"avaliable_day_after_receive,omitempty"`
 
-	AvaliableWeek           interface{} // TODO
-	IrregularyAvaliableTime interface{} // TODO
+	// 固定周期有效时间段
+	// 可以设置多个星期下的多个可用时间段，比如每周二10点到18点，用户自定义字段。
+	AvaliableWeek           *BusifavorCouponAvaliableWeek            `json:"avaliable_week,omitempty"`
+	IrregularyAvaliableTime []BusifavorCouponIrregularyAvaliableTime `json:"irregulary_avaliable_time,omitempty"`
 
 	// 领取后N天开始生效 可选
 	// 日期区间内，用户领券后需等待x天开始生效。
@@ -147,6 +149,36 @@ type BusifavorCouponAvailableTime struct {
 	// 需配合available_day_after_receive一同填写，不可单独填写。
 	// 示例值：7
 	WaitDayAfterReceive int `json:"wait_day_after_receive,omitempty"`
+}
+
+// BusifavorCouponIrregularyAvaliableTime 无规律的有效时间段
+type BusifavorCouponIrregularyAvaliableTime struct {
+	// 开始时间
+	BeginTime time.Time `json:"begin_time,omitempty"`
+	// 结束时间
+	EndTime time.Time `json:"end_time,omitempty"`
+}
+
+// BusifavorCouponAvaliableWeek 固定周期有效时间段
+type BusifavorCouponAvaliableWeek struct {
+	// 可用星期数
+	// 0代表周日，1代表周一，以此类推
+	// 当填写available_day_time时，week_day必填
+	// 示例值：1, 2
+	WeekDay []int `json:"week_day,omitempty"`
+	// 当天可用时间段
+	// 可以填写多个时间段，最多不超过2个。
+	AvaliableDayTime []BusifavorBeginEndSecend `json:"avaliable_day_time,omitempty"`
+}
+
+// BusifavorBeginEndSecend 当天可用时间段
+type BusifavorBeginEndSecend struct {
+	// 当天可用开始时间，单位：秒，1代表当天0点0分1秒。
+	// 示例值：3600
+	BeginTime int64 `json:"begin_time"`
+	// 当天可用结束时间，单位：秒，86399代表当天23点59分59秒。
+	// 示例值：86399
+	EndTime int64 `json:"end_time"`
 }
 
 // BusifavorFixedNormalCoupon 商家券固定面额满减券使用规则
