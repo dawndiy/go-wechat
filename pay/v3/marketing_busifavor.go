@@ -816,9 +816,9 @@ type BusifavorStockUpdateRequest struct {
 	// 样式信息 可选
 	DisplayPatternInfo *BusifavorDisplayPatternInfo `json:"display_pattern_info,omitempty"`
 	// 核销规则 可选
-	CouponUseRule BusifavorCouponUseRule `json:"coupon_use_rule,omitempty"`
+	CouponUseRule *BusifavorCouponUseRule `json:"coupon_use_rule,omitempty"`
 	// 发放规则 可选
-	StockSendRule BusifavorStockSendRule `json:"stock_send_rule,omitempty"`
+	StockSendRule *BusifavorStockSendRule `json:"stock_send_rule,omitempty"`
 	// 事件通知配置 可选
 	NotifyConfig *BusifavorNotifyConfig `json:"notify_config,omitempty"`
 }
