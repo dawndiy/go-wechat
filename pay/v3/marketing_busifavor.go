@@ -403,7 +403,7 @@ type BusifavorStockDetail struct {
 	// 事件通知配置
 	NotifyConfig *BusifavorNotifyConfig `json:"notify_config"`
 	// 批次发放情况
-	SendCountInfomation *BusifavorSendCountInfo `json:"send_count_infomation"`
+	SendCountInformation *BusifavorSendCountInfo `json:"send_count_information"`
 }
 
 // BusifavorCouponCodeCount 券code数量
