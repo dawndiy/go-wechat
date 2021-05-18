@@ -43,10 +43,15 @@ func (s *MarketingMediaService) NewUploadRequest(
 	if err != nil {
 		return nil, err
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), bytes.NewReader(metaBytes))
+	req, err := http.NewRequestWithContext(ctx, "POST", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
+	if s.client.userAgent != "" {
+		req.Header.Set("User-Agent", s.client.userAgent)
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Body = ioutil.NopCloser(bytes.NewReader(metaBytes)) // 设置 body 用于 signRequest 方法技术签名
 	if err = s.client.signRequest(req); err != nil {
 		return nil, err
 	}
@@ -54,7 +59,7 @@ func (s *MarketingMediaService) NewUploadRequest(
 	buf := bytes.NewBuffer(nil)
 	mpWriter := multipart.NewWriter(buf)
 	metaPart := make(textproto.MIMEHeader)
-	metaPart.Set("Content-Disposition", `form-data; name="meta"`)
+	metaPart.Set("Content-Disposition", `form-data; name="meta";`)
 	metaPart.Set("Content-Type", "application/json")
 	w, err := mpWriter.CreatePart(metaPart)
 	if err != nil {
@@ -65,7 +70,7 @@ func (s *MarketingMediaService) NewUploadRequest(
 	}
 
 	filePart := make(textproto.MIMEHeader)
-	filePart.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s"`, filename))
+	filePart.Set("Content-Disposition", fmt.Sprintf(`form-data; name="file"; filename="%s";`, filename))
 	filePart.Set("Content-Type", http.DetectContentType(fileBytes))
 	w, err = mpWriter.CreatePart(filePart)
 	if err != nil {
@@ -78,6 +83,7 @@ func (s *MarketingMediaService) NewUploadRequest(
 	if err = mpWriter.Close(); err != nil {
 		return nil, err
 	}
+	req.Header.Set("Content-Type", mpWriter.FormDataContentType())
 	req.Body = ioutil.NopCloser(buf)
 
 	return req, nil
