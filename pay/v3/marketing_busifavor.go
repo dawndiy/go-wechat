@@ -816,11 +816,39 @@ type BusifavorStockUpdateRequest struct {
 	// 样式信息 可选
 	DisplayPatternInfo *BusifavorDisplayPatternInfo `json:"display_pattern_info,omitempty"`
 	// 核销规则 可选
-	CouponUseRule *BusifavorCouponUseRule `json:"coupon_use_rule,omitempty"`
+	CouponUseRule *BusifavorCouponUseRuleUpdate `json:"coupon_use_rule,omitempty"`
 	// 发放规则 可选
-	StockSendRule *BusifavorStockSendRule `json:"stock_send_rule,omitempty"`
+	StockSendRule *BusifavorStockSendRuleUpdate `json:"stock_send_rule,omitempty"`
 	// 事件通知配置 可选
 	NotifyConfig *BusifavorNotifyConfig `json:"notify_config,omitempty"`
+}
+
+// BusifavorCouponUseRuleUpdate 商家券核销规则
+type BusifavorCouponUseRuleUpdate struct {
+	// 核销方式 必填
+	// 枚举值：
+	// OFF_LINE：线下滴码核销，点击券“立即使用”跳转展示券二维码详情。
+	// MINI_PROGRAMS：线上小程序核销，点击券“立即使用”跳转至配置的商家小程序（需要添加小程序appid和path）。
+	// PAYMENT_CODE：微信支付付款码核销，点击券“立即使用”跳转至微信支付钱包付款码。
+	// SELF_CONSUME：用户自助核销，点击券“立即使用”跳转至用户自助操作核销界面（当前暂不支持用户自助核销）。
+	UseMethod string `json:"use_method"`
+
+	// 小程序appid 可选
+	// 核销方式为线上小程序核销才有效
+	MiniProgramsAPPID string `json:"mini_programs_appid,omitempty"`
+	// 小程序path 可选
+	// 核销方式为线上小程序核销才有效
+	MiniProgramsPath string `json:"mini_programs_path,omitempty"`
+}
+
+// BusifavorStockSendRuleUpdate 商家券发放规则更新
+type BusifavorStockSendRuleUpdate struct {
+	// 是否开启自然人限制 可选
+	// 不填默认否
+	NaturalPersonLimit bool `json:"natural_person_limit,omitempty"`
+	// 可疑账号拦截 可选
+	// 不填默认否
+	PreventAPIAbuse bool `json:"prevent_api_abuse,omitempty"`
 }
 
 // StockUpdate 修改商家券基本信息
