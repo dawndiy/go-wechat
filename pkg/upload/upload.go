@@ -2,9 +2,13 @@ package upload
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -51,6 +55,39 @@ func UploadFile(name string) Uploader {
 		filename: filename,
 		b:        b,
 		err:      nil,
+	}
+}
+
+// UploadURL 通过 URL 下载后上传
+func UploadURL(url string, filename ...string) Uploader {
+	rsp, err := http.Get(url)
+	if err != nil {
+		return &bytesUploader{err: err}
+	}
+	defer rsp.Body.Close()
+	b, err := ioutil.ReadAll(rsp.Body)
+	var fname string
+	if len(filename) > 0 {
+		fname = filename[0]
+	} else {
+		mb := md5.Sum(b)
+		fname = hex.EncodeToString(mb[:])
+		ct := rsp.Header.Get("Content-Type")
+		ct = strings.ToLower(ct)
+		switch ct {
+		case "image/jpeg":
+			fname += ".jpg"
+		case "image/png":
+			fname += ".png"
+		case "image/bmp":
+			fname += ".bmp"
+		}
+	}
+
+	return &bytesUploader{
+		filename: fname,
+		b:        b,
+		err:      err,
 	}
 }
 
