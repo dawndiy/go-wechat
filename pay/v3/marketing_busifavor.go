@@ -133,12 +133,12 @@ type BusifavorCouponAvailableTime struct {
 	// 可配合wait_days_after_receive一同填写，也可单独填写。
 	// 单独填写时，有效期内领券后立即生效，生效后x天内有效。
 	// 示例值：3
-	AvaliableDayAfterReceive int `json:"avaliable_day_after_receive,omitempty"`
+	AvailableDayAfterReceive int `json:"available_day_after_receive,omitempty"`
 
 	// 固定周期有效时间段
 	// 可以设置多个星期下的多个可用时间段，比如每周二10点到18点，用户自定义字段。
-	AvaliableWeek           *BusifavorCouponAvaliableWeek            `json:"avaliable_week,omitempty"`
-	IrregularyAvaliableTime []BusifavorCouponIrregularyAvaliableTime `json:"irregulary_avaliable_time,omitempty"`
+	AvailableWeek           *BusifavorCouponAvailableWeek            `json:"available_week,omitempty"`
+	IrregularyAvailableTime []BusifavorCouponIrregularyAvailableTime `json:"irregulary_available_time,omitempty"`
 
 	// 领取后N天开始生效 可选
 	// 日期区间内，用户领券后需等待x天开始生效。
@@ -151,16 +151,16 @@ type BusifavorCouponAvailableTime struct {
 	WaitDayAfterReceive int `json:"wait_day_after_receive,omitempty"`
 }
 
-// BusifavorCouponIrregularyAvaliableTime 无规律的有效时间段
-type BusifavorCouponIrregularyAvaliableTime struct {
+// BusifavorCouponIrregularyAvailableTime 无规律的有效时间段
+type BusifavorCouponIrregularyAvailableTime struct {
 	// 开始时间
 	BeginTime time.Time `json:"begin_time,omitempty"`
 	// 结束时间
 	EndTime time.Time `json:"end_time,omitempty"`
 }
 
-// BusifavorCouponAvaliableWeek 固定周期有效时间段
-type BusifavorCouponAvaliableWeek struct {
+// BusifavorCouponAvailableWeek 固定周期有效时间段
+type BusifavorCouponAvailableWeek struct {
 	// 可用星期数
 	// 0代表周日，1代表周一，以此类推
 	// 当填写available_day_time时，week_day必填
@@ -168,7 +168,7 @@ type BusifavorCouponAvaliableWeek struct {
 	WeekDay []int `json:"week_day,omitempty"`
 	// 当天可用时间段
 	// 可以填写多个时间段，最多不超过2个。
-	AvaliableDayTime []BusifavorBeginEndSecend `json:"avaliable_day_time,omitempty"`
+	AvailableDayTime []BusifavorBeginEndSecend `json:"available_day_time,omitempty"`
 }
 
 // BusifavorBeginEndSecend 当天可用时间段
@@ -411,7 +411,7 @@ type BusifavorCouponCodeCount struct {
 	// 该批次总共已上传的code总数
 	TotalCount int64 `json:"total_count"`
 	// 该批次当前可用的code数
-	AvaliableCount int64 `json:"avaliable_count"`
+	AvailableCount int64 `json:"available_count"`
 }
 
 // BusifavorSendCountInfo 批次发放情况
@@ -541,7 +541,7 @@ type BusifavorUserCoupon struct {
 	// 批次号
 	StockID string `json:"stock_id"`
 	// 券可使用开始时间
-	AvaliableStartTime time.Time `json:"avaliable_start_time"`
+	AvailableStartTime time.Time `json:"available_start_time"`
 	// 券过期时间
 	ExpireTime time.Time `json:"expire_time"`
 	// 券领券时间
