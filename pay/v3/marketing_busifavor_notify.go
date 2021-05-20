@@ -18,9 +18,9 @@ type NotifyCouponSend struct {
 	// 发放时间
 	SendTime time.Time `json:"send_time"`
 	// 微信用户在appid下的唯一标识
-	OpenID string `json:"open_id"`
+	OpenID string `json:"openid"`
 	// 用户统一标识
-	UnionID string `json:"union_id"`
+	UnionID string `json:"unionid"`
 	// 发放渠道
 	// 枚举值：
 	// BUSICOUPON_SEND_CHANNEL_MINIAPP：小程序
@@ -36,6 +36,13 @@ type NotifyCouponSend struct {
 	// 发券附加信息
 	// 仅在支付有礼、扫码领券（营销馆）、会员有礼发放渠道，才有该信息
 	AttachInfo string `json:"attach_info"`
+
+	bytes []byte `json:"-"`
+}
+
+// Bytes 返回解密后原始字节
+func (n NotifyCouponSend) Bytes() []byte {
+	return n.bytes
 }
 
 // ParseNotify 解析商家券领券事件回调通知
@@ -56,5 +63,6 @@ func (s *MarketingBusifavorService) ParseNotify(req *http.Request) (*NotifyCoupo
 
 	couponSend := new(NotifyCouponSend)
 	err = json.Unmarshal(data, couponSend)
+	couponSend.bytes = data
 	return couponSend, err
 }
