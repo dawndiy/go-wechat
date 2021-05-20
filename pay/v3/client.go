@@ -219,8 +219,11 @@ func (c *Client) getWeChatPayCert(serialNo string) (*WeChatPayCert, error) {
 
 func (c *Client) checkResponse(r *http.Response) error {
 	// Certificates 接口设置 disableSignCheck 不校验应答签名
+	if disableSignCheckFromContext(r.Request.Context()) {
+		return CheckResponse(r)
+	}
 	// 429 - Too Many Requests 没有应答签名
-	if !disableSignCheckFromContext(r.Request.Context()) || r.StatusCode != 429 {
+	if r.StatusCode != 429 {
 		if err := c.checkResponseSign(r); err != nil {
 			return err
 		}
