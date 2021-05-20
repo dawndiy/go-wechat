@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/dawndiy/go-wechat/httpclient"
@@ -44,6 +45,7 @@ type Client struct {
 	apiClientKey  []byte // apiclient_key.pem
 
 	wechatPayCerts []WeChatPayCert // 平台证书(非商户)
+	certsMu        sync.Mutex
 
 	common service
 
@@ -196,6 +198,8 @@ func (c *Client) getWeChatPayCert(serialNo string) (*WeChatPayCert, error) {
 	if serialNo == "" {
 		return nil, fmt.Errorf("serialNo is empty")
 	}
+	c.certsMu.Lock()
+	defer c.certsMu.Unlock()
 	for _, v := range c.wechatPayCerts {
 		if v.SerialNo == serialNo {
 			return &v, nil
