@@ -438,6 +438,7 @@ type BusifavorSendCountInfo struct {
 func (s *MarketingBusifavorService) StockDetail(ctx context.Context, stockID string) (*BusifavorStockDetail, error) {
 	req, err := s.client.NewRequest(ctx, "GET", fmt.Sprintf("marketing/busifavor/stocks/%s", stockID), nil)
 	if err != nil {
+		return nil, err
 	}
 	detail := new(BusifavorStockDetail)
 	_, err = s.client.Do(req, detail)
