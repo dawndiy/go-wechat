@@ -588,7 +588,7 @@ func (s *MarketingBusifavorService) UserCoupon(
 		"marketing/busifavor/users/%s/coupons/%s/appids/%s",
 		openid, couponCode, appid,
 	)
-	req, err := s.client.NewRequest(ctx, "POST", api, nil)
+	req, err := s.client.NewRequest(ctx, "GET", api, nil)
 	if err != nil {
 		return nil, err
 	}
