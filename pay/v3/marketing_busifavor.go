@@ -462,7 +462,7 @@ type BusifavorCouponUseRequest struct {
 	UseRequestNo string `json:"use_request_no"`
 	// 用户标识 可选
 	// 用户的唯一标识，做安全校验使用，非必填
-	OpenID string `json:"open_id,omitempty"`
+	OpenID string `json:"openid,omitempty"`
 }
 
 // CouponsUse 核销用户券
