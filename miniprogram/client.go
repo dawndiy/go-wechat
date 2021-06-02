@@ -43,6 +43,8 @@ type Client struct {
 	WXACode                *WXACodeService
 	CustomerServiceMessage *CustomerServiceMessageService
 	SubscribeMessage       *SubscribeMessageService
+	// 插件管理
+	PluginManager *PluginManagerService
 }
 
 // NewClient 新建一个新的小程序服务端接口客户端
@@ -64,6 +66,7 @@ func NewClient(opts ...ClientOption) *Client {
 	c.WXACode = (*WXACodeService)(&c.common)
 	c.CustomerServiceMessage = (*CustomerServiceMessageService)(&c.common)
 	c.SubscribeMessage = (*SubscribeMessageService)(&c.common)
+	c.PluginManager = (*PluginManagerService)(&c.common)
 
 	return c
 }
