@@ -205,10 +205,10 @@ type BusifavorDiscountCoupon struct {
 type BusifavorExchangeCoupon struct {
 	// 单品换购价 可选
 	// 单位：分
-	ExchangePrice int `json:"exchange_price,omitempty"`
+	ExchangePrice int `json:"exchange_price"`
 	// 消费门槛 可选
 	// 单位：分
-	TransactionMinimum int `json:"transaction_minimum,omitempty"`
+	TransactionMinimum int `json:"transaction_minimum"`
 }
 
 // BusifavorStockSendRule 商家券发放规则
