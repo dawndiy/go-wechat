@@ -44,7 +44,7 @@ func (s *PluginManagerService) GetPluginList(ctx context.Context) ([]PluginInfo,
 		PluginList []PluginInfo `json:"plugin_list"`
 	}
 	_, err = s.client.Do(req, &data)
-	return data.PluginList, nil
+	return data.PluginList, err
 }
 
 // ApplyPlugin 向插件开发者发起使用插件的申请
@@ -68,7 +68,7 @@ func (s *PluginManagerService) ApplyPlugin(ctx context.Context, pluginAPPID, rea
 	}
 
 	_, err = s.client.Do(req, nil)
-	return nil
+	return err
 }
 
 // UnbindPlugin 删除已添加的插件
@@ -91,5 +91,5 @@ func (s *PluginManagerService) UnbindPlugin(ctx context.Context, pluginAPPID str
 	}
 
 	_, err = s.client.Do(req, nil)
-	return nil
+	return err
 }
