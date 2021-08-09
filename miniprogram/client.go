@@ -2,7 +2,6 @@ package miniprogram
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -113,12 +112,13 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 // GetAccessToken 获取接口调用凭证
 func (c *Client) GetAccessToken(ctx context.Context) (string, error) {
-	if token, err := c.accessTokenStore.Get(); err == nil {
+	token, err := c.accessTokenStore.Get()
+	if err == nil {
 		return token, nil
 	}
 
 	if c.appid == "" || c.secret == "" {
-		return "", fmt.Errorf("appid or secret not set")
+		return "", err
 	}
 
 	accessToken, err := c.Auth.GetAccessToken(ctx, c.appid, c.secret)
