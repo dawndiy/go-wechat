@@ -44,6 +44,10 @@ type Client struct {
 	SubscribeMessage       *SubscribeMessageService
 	// 插件管理
 	PluginManager *PluginManagerService
+	// 链接
+	Link *LinkServie
+	// 自定义交易组件
+	Shop *ShopComponentShopService
 }
 
 // NewClient 新建一个新的小程序服务端接口客户端
@@ -66,6 +70,8 @@ func NewClient(opts ...ClientOption) *Client {
 	c.CustomerServiceMessage = (*CustomerServiceMessageService)(&c.common)
 	c.SubscribeMessage = (*SubscribeMessageService)(&c.common)
 	c.PluginManager = (*PluginManagerService)(&c.common)
+	c.Link = (*LinkServie)(&c.common)
+	c.Shop = (*ShopComponentShopService)(&c.common)
 
 	return c
 }
@@ -128,6 +134,11 @@ func (c *Client) GetAccessToken(ctx context.Context) (string, error) {
 
 	err = c.accessTokenStore.Save(accessToken.Value, accessToken.ExpiresIn)
 	return accessToken.Value, err
+}
+
+// URLWithToken 传入 API 路径(不需要开头 '/' ) 得到带 TOKEN 的 URL
+func (c *Client) URLWithToken(ctx context.Context, path string, value url.Values) (*url.URL, error) {
+	return c.apiURL(ctx, path, value)
 }
 
 // apiURL 传入 API PATH 和 url.Values ，自动附加上 access_token 返回 *url.URL
