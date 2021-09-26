@@ -24,6 +24,10 @@ type service struct {
 	client *Client
 }
 
+type Service struct {
+	Client *Client
+}
+
 // Client 微信小程序服务端接口客户端
 type Client struct {
 	client *httpclient.Client
@@ -101,13 +105,13 @@ func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body int
 
 // NewUploadRequest 新建上传请求
 func (c *Client) NewUploadRequest(
-	ctx context.Context, urlStr, fieldname, filename string, reader io.Reader) (*http.Request, error) {
+	ctx context.Context, urlStr, fieldname, filename string, reader io.Reader, fields map[string]string) (*http.Request, error) {
 
 	u, err := c.baseURL.Parse(urlStr)
 	if err != nil {
 		return nil, err
 	}
-	return internal.NewUploadRequest(ctx, u, fieldname, filename, reader)
+	return internal.NewUploadRequest(ctx, u, fieldname, filename, reader, fields)
 }
 
 // Do 执行一个接口请求

@@ -8,8 +8,14 @@ import (
 	"strings"
 )
 
+// XMLMap 微信 XML Map 类型
+//
+// 注意:
+//   多层级如 <a><b>1</b></a> 会被解析为 map["a.b"] = 1
+//   暂时不支持数组类别如 <a><b>1</b><b>2</b></a>, 2 会覆盖 1
 type XMLMap map[string]interface{}
 
+// GetString 获取 string 类型值
 func (m XMLMap) GetString(key string) string {
 	v := m[key]
 	if v == nil {
@@ -18,6 +24,7 @@ func (m XMLMap) GetString(key string) string {
 	return fmt.Sprint(v)
 }
 
+// GetInt 获取 int 类型值
 func (m XMLMap) GetInt(key string) int {
 	v := m[key]
 	if v == nil {
@@ -32,12 +39,15 @@ func (m XMLMap) GetInt(key string) int {
 	return 0
 }
 
+// UnmarshalXML 解析 XML
 func (m *XMLMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	if len(*m) == 0 {
 		*m = make(XMLMap)
 	}
 
-	var key, val string
+	var stack []string
+
+	var key, val, last string
 	for {
 		token, err := d.Token()
 		if err != nil {
@@ -49,20 +59,34 @@ func (m *XMLMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		switch t := token.(type) {
 		case xml.StartElement:
 			key = t.Name.Local
-		//case xml.EndElement:
+			stack = append(stack, key)
+			last = "start"
+		case xml.EndElement:
+			key = t.Name.Local
+			last = "end"
+			if key != "" && key != start.Name.Local {
+				mk := strings.Join(stack, ".")
+				(*m)[mk] = val
+			}
+			if len(stack) > 0 {
+				stack = stack[:len(stack)-1]
+			}
 		case xml.CharData:
-			val = string(t)
+			if last == "start" {
+				val = string(t)
+			} else {
+				val = ""
+			}
+			last = "chardata"
 		}
-		//fmt.Printf("k:'%v' v:'%v' '%v'\n", key, val, []byte(val))
-
-		if key != "" && !strings.HasPrefix(val, "\n") {
-			(*m)[key] = val
-		}
+		//fmt.Println("->", reflect.TypeOf(token))
+		//fmt.Printf("t: '%v' k:'%v' s:'%v' v:'%v' '%v'\n", token, key, stack, val, []byte(val))
 	}
 
 	return nil
 }
 
+// MarshalXML 序列化为 XML
 func (m XMLMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name.Local = "xml" // 微信接口根为 xml
 	if err := e.EncodeToken(start); err != nil {
@@ -86,8 +110,10 @@ func (m XMLMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return e.Flush()
 }
 
+// XMLCDATA CDATA 类型
 type XMLCDATA string
 
+// MarshalXML 序列化XML
 func (cdata XMLCDATA) MarshalXML(e *xml.Encoder, start xml.StartElement) (err error) {
 	type innerData struct {
 		Value string `xml:",cdata"`
@@ -96,6 +122,7 @@ func (cdata XMLCDATA) MarshalXML(e *xml.Encoder, start xml.StartElement) (err er
 	return
 }
 
+// XMLStartElement 返回一个XML起始节点
 func XMLStartElement(local string) xml.StartElement {
 	return xml.StartElement{
 		Name: xml.Name{

@@ -231,25 +231,21 @@ type ShopSPUListQuery struct {
 // 时间范围 create_time 和 update_time 同时存在时，以 create_time 的范围为准
 //
 // 文档: https://developers.weixin.qq.com/miniprogram/dev/framework/ministore/minishopopencomponent2/API/SPU/get_spu_list.html
-func (s *ShopComponentShopService) SPUGetList(ctx context.Context, productID int64, outProductID string, needEditSPU int) (*ShopSPU, error) {
+func (s *ShopComponentShopService) SPUGetList(ctx context.Context, query ShopSPUListQuery) (int64, []ShopSPU, error) {
 	u, err := s.client.apiURL(ctx, "shop/spu/get_list", nil)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
-	body := map[string]interface{}{
-		"product_id":     productID,
-		"out_product_id": outProductID,
-		"need_edit_spu":  needEditSPU,
-	}
-	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), query)
 	if err != nil {
-		return nil, err
+		return 0, nil, err
 	}
 	var data struct {
-		SPU *ShopSPU
+		SPUS     []ShopSPU `json:"spus"`
+		TotalNum int64     `json:"total_num"`
 	}
 	_, err = s.client.Do(req, &data)
-	return data.SPU, err
+	return data.TotalNum, data.SPUS, err
 }
 
 // ShopSPUUpdateInfo 交易组件商品更新信息

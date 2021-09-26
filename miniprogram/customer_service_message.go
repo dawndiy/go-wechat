@@ -103,7 +103,7 @@ func (s *CustomerServiceMessageService) UploadTempMedia(
 		return nil, err
 	}
 
-	req, err := s.client.NewUploadRequest(ctx, u.String(), "media", up.Name(), up.Reader())
+	req, err := s.client.NewUploadRequest(ctx, u.String(), "media", up.Name(), up.Reader(), nil)
 	if err != nil {
 		return nil, err
 	}

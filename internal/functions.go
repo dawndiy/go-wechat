@@ -42,7 +42,8 @@ func NewJSONRequest(ctx context.Context, method string, u *url.URL, body interfa
 
 // NewUploadRequest 文件上传请求
 func NewUploadRequest(
-	ctx context.Context, u *url.URL, fieldname, filename string, reader io.Reader) (*http.Request, error) {
+	ctx context.Context, u *url.URL, fieldname, filename string, reader io.Reader,
+	fields ...map[string]string) (*http.Request, error) {
 
 	b, err := ioutil.ReadAll(reader)
 	if err != nil {
@@ -64,6 +65,13 @@ func NewUploadRequest(
 	if _, err := w.Write(b); err != nil {
 		return nil, err
 	}
+
+	if len(fields) > 0 {
+		for k, v := range fields[0] {
+			mpWriter.WriteField(k, v)
+		}
+	}
+
 	if err = mpWriter.Close(); err != nil {
 		return nil, err
 	}
