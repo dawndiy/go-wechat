@@ -211,7 +211,7 @@ func (s *ShopComponentShopService) SPUGet(ctx context.Context, productID int64, 
 // ShopSPUListQuery 交易组件商品列表查询
 type ShopSPUListQuery struct {
 	// 商品状态 选填，不填时获取所有状态商品
-	Status int `json:"status,omitempty"`
+	Status *int `json:"status,omitempty"`
 	// 开始创建时间 选填，与end_create_time成对
 	StartCreateTime string `json:"start_create_time,omitempty"`
 	// 结束创建时间 选填，与start_create_time成对
