@@ -180,7 +180,7 @@ type ShopSPU struct {
 type ShopSPUAuditInfo struct {
 	SubmitTime   string `json:"submit_time"`
 	AuditTime    string `json:"audit_time"`
-	RegectReason string `json:"regect_reason"`
+	RejectReason string `json:"reject_reason"`
 	AuditID      string `json:"audit_id"`
 }
 
