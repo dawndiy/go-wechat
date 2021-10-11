@@ -180,7 +180,7 @@ type ShopSPU struct {
 type ShopSPUAuditInfo struct {
 	SubmitTime   string `json:"submit_time"`
 	AuditTime    string `json:"audit_time"`
-	RegectReason string `json:"regect_reason"`
+	RejectReason string `json:"reject_reason"`
 	AuditID      string `json:"audit_id"`
 }
 
@@ -224,6 +224,8 @@ type ShopSPUListQuery struct {
 	Page int64 `json:"page"`
 	// 页面大小 不超过100
 	PageSize int64 `json:"page_size"`
+	// 默认0:获取线上数据, 1:获取草稿数据
+	NeedEditSPU int `json:"need_edit_spu"`
 }
 
 // SPUGetList 获取商品列表
