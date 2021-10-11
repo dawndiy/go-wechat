@@ -77,15 +77,15 @@ func (s *ShopComponentShopService) DeliverySend(ctx context.Context, r DeliveryS
 // 把订单状态从30（待收货）流转到100（完成）
 //
 // 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/delivery/recieve.html
-func (s *ShopComponentShopService) DeliveryRecieve(ctx context.Context, orderID, outOrderID, openid string) error {
+func (s *ShopComponentShopService) DeliveryRecieve(ctx context.Context, orderID int64, outOrderID, openid string) error {
 	u, err := s.client.apiURL(ctx, "shop/delivery/recieve", nil)
 	if err != nil {
 		return err
 	}
-	body := map[string]string{
+	body := map[string]interface{}{
 		"openid": openid,
 	}
-	if orderID != "" {
+	if orderID != 0 {
 		body["order_id"] = orderID
 	} else {
 		body["out_order_id"] = outOrderID
