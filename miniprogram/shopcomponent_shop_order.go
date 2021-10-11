@@ -134,9 +134,11 @@ func (s *ShopComponentShopService) OrderAdd(ctx context.Context, r ShopOrderAddR
 	if err != nil {
 		return nil, err
 	}
-	result := new(ShopOrderAddResult)
-	_, err = s.client.Do(req, result)
-	return result, err
+	var data struct {
+		Data *ShopOrderAddResult `json:"data"`
+	}
+	_, err = s.client.Do(req, &data)
+	return data.Data, err
 }
 
 type ShopOrderPayRequest struct {
