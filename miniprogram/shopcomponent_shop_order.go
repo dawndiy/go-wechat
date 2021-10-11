@@ -43,7 +43,17 @@ type ShopOrderAddRequest struct {
 		ProductInfos []ShopOrderProductInfo `json:"product_infos"`
 		// 支付信息
 		PayInfo ShopOrderPayInfo `json:"pay_info"`
+		// 价格信息
+		PriceInfo ShopOrderPriceInfo `json:"price_info"`
 	} `json:"order_detail"`
+
+	// 物流信息
+	DeliveryDetail struct {
+		// 1: 正常快递, 2: 无需快递, 3: 线下配送, 4: 用户自提 （默认1）
+		DeliveryType int `json:"delivery_type"`
+	} `json:"delivery_detail"`
+	// 可选 地址信息，delivery_type = 2 无需设置, delivery_type = 4 填写自提门店地址
+	AddressInfo *ShopOrderAddressInfo `json:"address_info,omitempty"`
 }
 
 type ShopOrderProductInfo struct {
@@ -65,13 +75,46 @@ type ShopOrderProductInfo struct {
 	Path string `json:"path"`
 }
 
+// ShopOrderPayInfo 自定义交易组件订单支付信息
 type ShopOrderPayInfo struct {
 	// 支付方式，0，微信支付，1: 货到付款，2：商家会员储蓄卡（默认0）
-	PayMethodType int
+	PayMethodType int `json:"pay_method_type"`
 	// 预支付ID 必填
-	PrepayID string
+	PrepayID string `json:"prepay_id,omitempty"`
 	// 预付款时间（拿到prepay_id的时间）
-	PrepayTime string
+	PrepayTime string `json:"prepay_time,omitempty"`
+}
+
+// ShopOrderPriceInfo 自定义交易组件订单价格信息
+type ShopOrderPriceInfo struct {
+	// 该订单最终的金额（单位：分） 必填
+	OrderPrice int64 `json:"order_price"`
+	// 运费（单位：分） 必填
+	Freight int64 `json:"freight"`
+	// 优惠金额（单位：分） 可选
+	DiscountedPrice int64 `json:"discounted_price,omitempty"`
+	// 附加金额（单位：分） 可选
+	AdditionalPrice int64 `json:"additional_price,omitempty"`
+	// 附加金额备注
+	AdditionalRemarks string `json:"additional_remarks,omitempty"`
+}
+
+// ShopOrderAddressInfo 自定义交易组件订单地址信息
+type ShopOrderAddressInfo struct {
+	// 收件人姓名 必填
+	ReceiverName string `json:"receiver_name"`
+	// 详细收货地址信息 必填
+	DetailedAddress string `json:"detailed_address"`
+	// 收件人手机号码 必填
+	TelNumber string `json:"tel_number"`
+	// 国家 可选
+	Country string `json:"country,omitempty"`
+	// 省份 可选
+	Province string `json:"province,omitempty"`
+	// 城市 可选
+	City string `json:"city,omitempty"`
+	// 乡镇 可选
+	Town string `json:"town,omitempty"`
 }
 
 type ShopOrderAddResult struct {
