@@ -237,13 +237,13 @@ type ShopAuditCategoryRequest struct {
 // ShopAuditCategoryInfo 自定义交易组件类目审核信息
 type ShopAuditCategoryInfo struct {
 	// 一级类目
-	Level1 int
+	Level1 int `json:"level1"`
 	// 二级类目
-	Level2 int
+	Level2 int `json:"level2"`
 	// 三级类目
-	Level3 int
+	Level3 int `json:"level3"`
 	// 资质材料，图片url
-	Certificate []string
+	Certificate []string `json:"certificate"`
 }
 
 // AuditCategory 类目审核
