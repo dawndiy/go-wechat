@@ -52,6 +52,8 @@ type Client struct {
 	Link *LinkServie
 	// 自定义交易组件
 	Shop *ShopComponentShopService
+	// 手机号
+	PhoneNumber *PhoneNumberService
 }
 
 // NewClient 新建一个新的小程序服务端接口客户端
