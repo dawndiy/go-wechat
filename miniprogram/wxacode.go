@@ -88,8 +88,8 @@ func (s *WXACodeService) Get(ctx context.Context, qrConfig *QRCodeConfig) (http.
 	return resp.Header, b, err
 }
 
-// QRCodeUnlimitedConfig wxacode.getUnlimited 接口获取二维码配置
-type QRCodeUnlimitedConfig struct {
+// WXACodeUnlimitedConfig wxacode.getUnlimited 接口获取二维码配置
+type WXACodeUnlimitedConfig struct {
 
 	// 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，
 	// 其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
@@ -115,13 +115,13 @@ type QRCodeUnlimitedConfig struct {
 // 通过该接口生成的小程序码，永久有效，有数量限制，详见获取二维码。
 //
 // 微信文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
-func (s *WXACodeService) GetUnlimited(ctx context.Context, qrConfig *QRCodeUnlimitedConfig) (http.Header, []byte, error) {
+func (s *WXACodeService) GetUnlimited(ctx context.Context, conf *WXACodeUnlimitedConfig) (http.Header, []byte, error) {
 	u, err := s.client.apiURL(ctx, "wxa/getwxacodeunlimit", nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(ctx, "POST", u.String(), qrConfig)
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), conf)
 	if err != nil {
 		return nil, nil, err
 	}
