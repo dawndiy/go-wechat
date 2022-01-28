@@ -78,6 +78,7 @@ func NewClient(opts ...ClientOption) *Client {
 	c.PluginManager = (*PluginManagerService)(&c.common)
 	c.Link = (*LinkServie)(&c.common)
 	c.Shop = (*ShopComponentShopService)(&c.common)
+	c.PhoneNumber = (*PhoneNumberService)(&c.common)
 
 	return c
 }
