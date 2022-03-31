@@ -125,6 +125,16 @@ type ShopOrderAddResult struct {
 	FinalPrice       int64  `json:"final_price"`
 }
 
+// OrderAdd 生成订单
+//
+// 该接口仅用于在微信侧生成一笔业务订单，若需要吊起收银台，则需要调用生成支付订单接口。
+// 注：
+//   1:调用该接口成单后，如果想要修改订单，需要调用更新订单相关接口；
+//   2:生成业务订单时，微信测会对金额进行校验，请确保金额相关信息满足：
+//     sum(sku_real_price) + freight = order_price = sku.sale_price * cnt +freight-discounted_price+additional_price 否则将生成订单失败，
+//     其中sku_real_price为订单中某一类SKU的实付款（单个SKU标价SKU个数 - 单个SKU优惠价格SKU个数）。
+//
+// 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/order/add_order_new.html
 func (s *ShopComponentShopService) OrderAdd(ctx context.Context, r ShopOrderAddRequest) (*ShopOrderAddResult, error) {
 	u, err := s.client.apiURL(ctx, "shop/order/add", nil)
 	if err != nil {
@@ -158,6 +168,15 @@ type ShopOrderPayRequest struct {
 	PayTime string `json:"pay_time,omitempty"`
 }
 
+// OrderPay 同步订单支付结果
+//
+// 如果action_type=1，即支付成功调用该接口后，订单状态status会从10（待付款）或11（收银台支付完成）变成20（待发货）。
+// 否则，订单状态status会从10（待付款）变成250（取消)
+// 如果订单状态不是10（待付款）将报错，错误码为100000。
+// transaction_id在以下情况下必填：
+// action_type=1且order/add时传的pay_method_type=0(默认0)时必填
+//
+// 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/order/pay_order.html
 func (s *ShopComponentShopService) OrderPay(ctx context.Context, r ShopOrderPayRequest) error {
 	u, err := s.client.apiURL(ctx, "shop/order/pay", nil)
 	if err != nil {
@@ -169,4 +188,40 @@ func (s *ShopComponentShopService) OrderPay(ctx context.Context, r ShopOrderPayR
 	}
 	_, err = s.client.Do(req, nil)
 	return err
+}
+
+type ShopOrderPaymentParams struct {
+	TimeStamp int64  `json:"timeStamp"`
+	NonceStr  string `json:"nonceStr"`
+	Package   string `json:"package"`
+	PaySign   string `json:"paySign"`
+	SignType  string `json:"signType"`
+}
+
+// OrderGetPaymentParams 生成支付参数
+//
+// 调用接口发起支付单请求，需要先生成业务订单才可以发起生成支付订单。
+// 注：
+//   1:一旦发起支付单，则业务订单的价格不可进行修改，若需要修改，请先关闭支付单，重新发起一笔支付订单。
+//   2:每次需要拉起收银台时，请先调用此接口获取最新的支付参数。
+//   3:使用本接口的订单需要在生成订单时将fund_type设为1
+func (s *ShopComponentShopService) OrderGetPaymentParams(
+	ctx context.Context, orderID int64, outOrderID, openID string) (*ShopOrderPaymentParams, error) {
+
+	u, err := s.client.apiURL(ctx, "shop/order/pay", nil)
+	if err != nil {
+		return nil, err
+	}
+	body := map[string]interface{}{
+		"order_id":     orderID,
+		"out_order_id": outOrderID,
+		"openid":       openID,
+	}
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+	params := new(ShopOrderPaymentParams)
+	_, err = s.client.Do(req, params)
+	return params, err
 }

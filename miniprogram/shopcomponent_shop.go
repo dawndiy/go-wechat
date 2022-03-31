@@ -38,6 +38,10 @@ type ShopRegisterAccessInfo struct {
 	AddAftersaleFinished int `json:"add_aftersale_finished"`
 	TestAPIFinished      int `json:"test_api_finished"`
 	DeployWXAFinished    int `json:"deploy_wxa_finished"`
+	ECOrderSuccess       int `json:"ec_order_success"`
+	ECOrderFinished      int `json:"ec_order_finished"`
+	ECAfterSaleSuccess   int `json:"ec_after_sale_success"`
+	ECAfterSaleFinished  int `json:"ec_after_sale_finished"`
 }
 
 // ShopRegisterSeneGroup 自定义交易组件场景接入相关
