@@ -205,10 +205,12 @@ type ShopOrderPaymentParams struct {
 //   1:一旦发起支付单，则业务订单的价格不可进行修改，若需要修改，请先关闭支付单，重新发起一笔支付订单。
 //   2:每次需要拉起收银台时，请先调用此接口获取最新的支付参数。
 //   3:使用本接口的订单需要在生成订单时将fund_type设为1
+//
+// 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/order/getpaymentparams.html
 func (s *ShopComponentShopService) OrderGetPaymentParams(
 	ctx context.Context, orderID int64, outOrderID, openID string) (*ShopOrderPaymentParams, error) {
 
-	u, err := s.client.apiURL(ctx, "shop/order/pay", nil)
+	u, err := s.client.apiURL(ctx, "shop/order/getpaymentparams", nil)
 	if err != nil {
 		return nil, err
 	}
