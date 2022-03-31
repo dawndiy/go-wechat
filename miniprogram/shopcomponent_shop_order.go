@@ -54,6 +54,13 @@ type ShopOrderAddRequest struct {
 	} `json:"delivery_detail"`
 	// 可选 地址信息，delivery_type = 2 无需设置, delivery_type = 4 填写自提门店地址
 	AddressInfo *ShopOrderAddressInfo `json:"address_info,omitempty"`
+	// 订单类型：0，普通单，1，二级商户单
+	FundType int `json:"fund_type"`
+	// 秒级时间戳，订单超时时间，获取支付参数将使用此时间作为prepay_id 过期时间;
+	// 时间到期之后，微信会流转订单超时取消（status = 181）
+	ExpireTime int64 `json:"expire_time,omitempty"`
+	// 确认收货之后多久禁止发起售后，单位：天，需>=5天，default=5天
+	AftersaleDuration int `json:"aftersale_duration,omitempty"`
 }
 
 type ShopOrderProductInfo struct {
