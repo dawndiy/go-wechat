@@ -101,8 +101,9 @@ func (s *ShopComponentShopService) AccountGetBrandList(ctx context.Context) ([]S
 }
 
 type ShopAccountInfo struct {
-	ServiceAgentPath  string
-	ServiceAgentPhone string
+	ServiceAgentPath  string `json:"service_agent_path"`
+	ServiceAgentPhone string `json:"service_agent_phone"`
+	ServiceAgentType  []int  `json:"service_agent_type"`
 }
 
 // AccountGetInfo 获取商家信息
@@ -338,4 +339,49 @@ func (s *ShopComponentShopService) AuditGetMiniappCertificate(ctx context.Contex
 	var data ShopMiniappCertificate
 	_, err = s.client.Do(req, &data)
 	return &data, err
+}
+
+// ShopAccountUpdateInfoRequest 商家信息更新请求
+type ShopAccountUpdateInfoRequest struct {
+	// 小程序path 可选
+	ServiceAgentPath string `json:"service_agent_path,omitempty"`
+	// 客服联系方式 可选
+	ServiceAgentPhone string `json:"service_agent_phone,omitempty"`
+	// 客服类型，支持多个，0: 小程序客服，1: 自定义客服path 2: 联系电话
+	ServiceAgentType []int `json:"service_agent_type"`
+	// 默认退货地址
+	DefaultReceivingAddress *ShopAccountInfoDefaultReceivingAddress `json:"default_receiving_address,omitempty"`
+}
+
+type ShopAccountInfoDefaultReceivingAddress struct {
+	// 收件人姓名 必填
+	ReceiverName string `json:"receiver_name"`
+	// 详细收货地址信息 必填
+	DetailedAddress string `json:"detailed_address"`
+	// 收件人手机号码 必填
+	TelNumber string `json:"tel_number"`
+	// 国家 可选
+	Country string `json:"country,omitempty"`
+	// 省份 可选
+	Province string `json:"province,omitempty"`
+	// 城市 可选
+	City string `json:"city,omitempty"`
+	// 乡镇 可选
+	Town string `json:"town,omitempty"`
+}
+
+// AccountUpdateInfo 更新商家信息
+//
+// 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/account/update_info.html
+func (s *ShopComponentShopService) AccountUpdateInfo(ctx context.Context, r ShopAccountUpdateInfoRequest) error {
+	u, err := s.client.apiURL(ctx, "shop/account/update_info", nil)
+	if err != nil {
+		return err
+	}
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), r)
+	if err != nil {
+		return err
+	}
+	_, err = s.client.Do(req, nil)
+	return err
 }
