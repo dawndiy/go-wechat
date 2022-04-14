@@ -133,7 +133,8 @@ func (s *ShopComponentShopService) ImageUpload(ctx context.Context, up upload.Up
 		return "", err
 	}
 	fields := map[string]string{
-		"resp_type": fmt.Sprint(respType),
+		"resp_type":   fmt.Sprint(respType),
+		"upload_type": "0", //0:图片流，1:图片url
 	}
 	req, err := s.client.NewUploadRequest(ctx, u.String(), "media", up.Name(), up.Reader(), fields)
 	if err != nil {
