@@ -39,8 +39,10 @@ type DeliverySendRequest struct {
 	OpenID string `json:"openid"`
 	// 发货完成标志位, 0: 未发完, 1:已发完
 	FinishAllDelivery int `json:"finish_all_delivery"`
-	// 快递信息
+	// 快递信息，delivery_type=1时必填
 	DeliveryList []DeliverySendItem `json:"delivery_list,omitempty"`
+	// 完成发货时间， finish_all_delivery = 1 必传
+	ShipDoneTime string `json:"ship_done_time"`
 }
 
 // DeliverySendItem 交易组件订单发货快递信息
@@ -49,6 +51,15 @@ type DeliverySendItem struct {
 	DeliveryID string `json:"delivery_id"`
 	// 快递单号
 	WaybillID string `json:"waybill_id"`
+	// 物流单对应的商品信息
+	ProductInfoList []DeliverySendProductInfo `json:"product_info_list"`
+}
+
+// DeliverySendProductInfo 物流单对应的商品信息
+type DeliverySendProductInfo struct {
+	OutProductID string `json:"out_product_id"`
+	OutSKUID     string `json:"out_sku_id"`
+	ProductCnt   int64  `json:"product_cnt"`
 }
 
 // DeliverySend 订单发货

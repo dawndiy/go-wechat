@@ -74,6 +74,8 @@ type ShopOrderProductInfo struct {
 	SalePrice int64 `json:"sale_price"`
 	// 扣除优惠后单件sku的均摊价格（单位：分），如果没优惠则与sale_price一致
 	RealPrice int64 `json:"real_price"`
+	// 单个SKU标价xSKU个数 - 单个SKU优惠价格xSKU个数
+	SKURealPrice int64 `json:"sku_real_price"`
 	// 生成订单时商品的头图 必填
 	HeadImg string `json:"head_img"`
 	// 生成订单时商品的标题 必填

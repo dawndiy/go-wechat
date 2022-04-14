@@ -26,6 +26,8 @@ type ShopSPUAddInfo struct {
 	InfoVersion string `json:"info_version"`
 	// sku数组
 	SKUS []ShopSKU `json:"skus"`
+	// 商品使用场景,1:视频号，3:订单中心
+	SceneGroupList []int `json:"scene_group_list"`
 }
 
 // ShopSPUDescInfo 商品描述信息
