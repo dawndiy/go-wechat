@@ -236,3 +236,82 @@ func (s *ShopComponentShopService) OrderGetPaymentParams(
 	_, err = s.client.Do(req, params)
 	return params, err
 }
+
+// ShopOrderGetResult 自定义交易组件订单获取结果
+type ShopOrderGetResult struct {
+	// 创建时间 yyyy-MM-dd HH:mm:ss，与微信服务器不得超过5秒
+	CreateTime string `json:"create_time"`
+	// 商家自定义订单ID 必填
+	OutOrderID string `json:"out_order_id"`
+	// 用户的openid 必填
+	OpenID string `json:"openid"`
+	// 下单时小程序的场景值
+	Scene string `json:"scene"`
+	// 订单详情
+	OrderDetail struct {
+		// 商品列表
+		ProductInfos []ShopOrderProductInfo `json:"product_infos"`
+		// 支付信息
+		PayInfo ShopOrderPayInfo `json:"pay_info"`
+		// 价格信息
+		PriceInfo ShopOrderPriceInfo `json:"price_info"`
+	} `json:"order_detail"`
+
+	// 物流信息
+	DeliveryDetail struct {
+		// 1: 正常快递, 2: 无需快递, 3: 线下配送, 4: 用户自提 （默认1）
+		DeliveryType int `json:"delivery_type"`
+	} `json:"delivery_detail"`
+	// 状态
+	Status int `json:"status"`
+	// 订单详情页路径
+	Path string `json:"path"`
+	// 可选 地址信息，delivery_type = 2 无需设置, delivery_type = 4 填写自提门店地址
+	AddressInfo          *ShopOrderAddressInfo `json:"address_info,omitempty"`
+	SettlementInfo       map[string]interface{}
+	RefundInfo           map[string]interface{}
+	RelatedAftersaleInfo map[string]interface{}
+	// 订单类型：0，普通单，1，二级商户单
+	FundType int `json:"fund_type"`
+	// 秒级时间戳，订单超时时间，获取支付参数将使用此时间作为prepay_id 过期时间;
+	// 时间到期之后，微信会流转订单超时取消（status = 181）
+	ExpireTime int64 `json:"expire_time,omitempty"`
+	// 确认收货之后多久禁止发起售后，单位：天，需>=5天，default=5天
+	AftersaleDuration int `json:"aftersale_duration,omitempty"`
+	// 推广员、分享员信息
+	PromotionInfo ShopOrderPromotionInfo
+}
+
+// ShopOrderPromotionInfo 推广员、分享员信息
+type ShopOrderPromotionInfo struct {
+	PromotionID     string `json:"promotion_id"`
+	PromotionOpenID string `json:"promotion_openid"`
+	FinderNickname  string `json:"finder_nickname"`
+	SharerOpenID    string `json:"sharer_openid"`
+}
+
+// OrderGet 获取订单详情
+//
+// 可以按照支付单号或者外部订单号来查询业务单详情、支付单详情、支付单状态。
+//
+// 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/order/get_order.html
+func (s *ShopComponentShopService) OrderGet(
+	ctx context.Context, orderID int64, outOrderID, openID string) (*ShopOrderGetResult, error) {
+
+	u, err := s.client.apiURL(ctx, "shop/order/get", nil)
+	if err != nil {
+		return nil, err
+	}
+	body := map[string]interface{}{
+		"order_id":     orderID,
+		"out_order_id": outOrderID,
+		"openid":       openID,
+	}
+	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
+	if err != nil {
+		return nil, err
+	}
+	res := new(ShopOrderGetResult)
+	_, err = s.client.Do(req, res)
+	return res, err
+}
