@@ -291,12 +291,14 @@ func (s *ShopComponentShopService) AuditResult(ctx context.Context, auditID stri
 	if err != nil {
 		return 0, "", err
 	}
-	var data struct {
-		Status       int    `json:"status"`
-		RejectReason string `json:"reject_reason"`
+	var result struct {
+		Data struct {
+			Status       int    `json:"status"`
+			RejectReason string `json:"reject_reason"`
+		} `json:"data"`
 	}
-	_, err = s.client.Do(req, &data)
-	return data.Status, data.RejectReason, err
+	_, err = s.client.Do(req, &result)
+	return result.Data.Status, result.Data.RejectReason, err
 }
 
 // ShopMiniappCertificate 自定义交易组件小程序资质
