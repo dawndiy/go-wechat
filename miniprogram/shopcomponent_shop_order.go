@@ -200,7 +200,7 @@ func (s *ShopComponentShopService) OrderPay(ctx context.Context, r ShopOrderPayR
 }
 
 type ShopOrderPaymentParams struct {
-	TimeStamp int64  `json:"timeStamp"`
+	TimeStamp string `json:"timeStamp"` // 微信文档是 number，实际是 string
 	NonceStr  string `json:"nonceStr"`
 	Package   string `json:"package"`
 	PaySign   string `json:"paySign"`
