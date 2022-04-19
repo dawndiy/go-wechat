@@ -94,7 +94,7 @@ func (s *ShopComponentShopService) SPUAdd(ctx context.Context, spu ShopSPUAddInf
 		return nil, err
 	}
 	var data struct {
-		Data *ShopSPUAddResult
+		Data *ShopSPUAddResult `json:"data"`
 	}
 	_, err = s.client.Do(req, &data)
 	return data.Data, err
