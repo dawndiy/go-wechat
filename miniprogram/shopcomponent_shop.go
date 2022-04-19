@@ -44,8 +44,8 @@ type ShopRegisterAccessInfo struct {
 	ECAfterSaleFinished  int `json:"ec_after_sale_finished"`
 }
 
-// ShopRegisterSeneGroup 自定义交易组件场景接入相关
-type ShopRegisterSeneGroup struct {
+// ShopRegisterSceneGroup 自定义交易组件场景接入相关
+type ShopRegisterSceneGroup struct {
 	GroupID           int    `json:"group_id"`
 	Reason            string `json:"reason"`
 	Name              string `json:"name"`
@@ -60,7 +60,7 @@ type ShopRegisterSeneGroup struct {
 // RegisterCheck 获取接入状态
 //
 // 文档: https://developers.weixin.qq.com/miniprogram/dev/framework/ministore/minishopopencomponent2/API/enter/enter_check.html
-func (s *ShopComponentShopService) RegisterCheck(ctx context.Context) (int, *ShopRegisterAccessInfo, []ShopRegisterSeneGroup, error) {
+func (s *ShopComponentShopService) RegisterCheck(ctx context.Context) (int, *ShopRegisterAccessInfo, []ShopRegisterSceneGroup, error) {
 
 	u, err := s.client.apiURL(ctx, "shop/register/check", nil)
 	if err != nil {
@@ -74,9 +74,9 @@ func (s *ShopComponentShopService) RegisterCheck(ctx context.Context) (int, *Sho
 
 	var data struct {
 		Data struct {
-			Status         int                     `json:"status"`
-			AccessInfo     ShopRegisterAccessInfo  `json:"access_info"`
-			SceneGroupList []ShopRegisterSeneGroup `json:"scene_group_list"`
+			Status         int                      `json:"status"`
+			AccessInfo     ShopRegisterAccessInfo   `json:"access_info"`
+			SceneGroupList []ShopRegisterSceneGroup `json:"scene_group_list"`
 		} `json:"data"`
 	}
 	_, err = s.client.Do(req, &data)
