@@ -232,9 +232,11 @@ func (s *ShopComponentShopService) OrderGetPaymentParams(
 	if err != nil {
 		return nil, err
 	}
-	params := new(ShopOrderPaymentParams)
-	_, err = s.client.Do(req, params)
-	return params, err
+	var data struct {
+		PaymentParams *ShopOrderPaymentParams `json:"payment_params"`
+	}
+	_, err = s.client.Do(req, &data)
+	return data.PaymentParams, err
 }
 
 // ShopOrderGetResult 自定义交易组件订单获取结果
@@ -246,7 +248,7 @@ type ShopOrderGetResult struct {
 	// 用户的openid 必填
 	OpenID string `json:"openid"`
 	// 下单时小程序的场景值
-	Scene string `json:"scene"`
+	Scene int `json:"scene"`
 	// 订单详情
 	OrderDetail struct {
 		// 商品列表
@@ -311,7 +313,9 @@ func (s *ShopComponentShopService) OrderGet(
 	if err != nil {
 		return nil, err
 	}
-	res := new(ShopOrderGetResult)
-	_, err = s.client.Do(req, res)
-	return res, err
+	var data struct {
+		Order *ShopOrderGetResult `json:"order"`
+	}
+	_, err = s.client.Do(req, &data)
+	return data.Order, err
 }
