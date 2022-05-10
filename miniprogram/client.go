@@ -54,6 +54,8 @@ type Client struct {
 	Shop *ShopComponentShopService
 	// 手机号
 	PhoneNumber *PhoneNumberService
+	// 运维中心
+	Operation *OperationService
 }
 
 // NewClient 新建一个新的小程序服务端接口客户端
@@ -79,6 +81,7 @@ func NewClient(opts ...ClientOption) *Client {
 	c.Link = (*LinkServie)(&c.common)
 	c.Shop = (*ShopComponentShopService)(&c.common)
 	c.PhoneNumber = (*PhoneNumberService)(&c.common)
+	c.Operation = (*OperationService)(&c.common)
 
 	return c
 }
