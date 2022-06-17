@@ -75,8 +75,8 @@ func (s *ShopComponentShopService) AccountGetCategoryList(ctx context.Context) (
 
 // ShopBrandListItem 品牌列表项
 type ShopBrandListItem struct {
-	BrandID      int
-	BrandWording string
+	BrandID      int    `json:"brand_id"`
+	BrandWording string `json:"brand_wording"`
 }
 
 // AccountGetBrandList 获取商家品牌列表
@@ -165,7 +165,7 @@ type ShopAuditBrandRequest struct {
 	// 品牌信息
 	BrandInfo ShopAuditBrandInfo `json:"brand_info"`
 	// 商品使用场景,1:视频号，3:订单中心
-	SceneGroupList []string `json:"scene_group_list"`
+	SceneGroupList []int `json:"scene_group_list"`
 }
 
 // ShopAuditBrandInfo 自定义交易组件上传品牌信息
