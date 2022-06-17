@@ -164,6 +164,8 @@ type ShopAuditBrandRequest struct {
 	License []string `json:"license"`
 	// 品牌信息
 	BrandInfo ShopAuditBrandInfo `json:"brand_info"`
+	// 商品使用场景,1:视频号，3:订单中心
+	SceneGroupList []string `json:"scene_group_list"`
 }
 
 // ShopAuditBrandInfo 自定义交易组件上传品牌信息
