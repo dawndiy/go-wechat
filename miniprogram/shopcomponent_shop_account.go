@@ -277,31 +277,38 @@ func (s *ShopComponentShopService) AuditCategory(ctx context.Context, audit Shop
 	return data.AuditID, err
 }
 
+// ShopAuditResult 查询品牌和类目的审核结果
+type ShopAuditResult struct {
+	// 审核状态, 0：审核中，1：审核成功，9：审核拒绝
+	Status int `json:"status"`
+	// 如果审核拒绝，返回拒绝原因
+	RejectReason string `json:"reject_reason"`
+	// 如果是品牌审核，返回brand_id
+	BrandID int `json:"brand_id"`
+}
+
 // AuditResult 获取审核结果
 //
 // 根据审核id，查询品牌和类目的审核结果。
 //
 // 文档: https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/ministore/minishopopencomponent2/API/audit/audit_result.html
-func (s *ShopComponentShopService) AuditResult(ctx context.Context, auditID string) (int, string, error) {
+func (s *ShopComponentShopService) AuditResult(ctx context.Context, auditID string) (*ShopAuditResult, error) {
 	u, err := s.client.apiURL(ctx, "shop/audit/result", nil)
 	if err != nil {
-		return 0, "", err
+		return nil, err
 	}
 	body := map[string]interface{}{
 		"audit_id": auditID,
 	}
 	req, err := s.client.NewRequest(ctx, "POST", u.String(), body)
 	if err != nil {
-		return 0, "", err
+		return nil, err
 	}
 	var result struct {
-		Data struct {
-			Status       int    `json:"status"`
-			RejectReason string `json:"reject_reason"`
-		} `json:"data"`
+		Data *ShopAuditResult
 	}
 	_, err = s.client.Do(req, &result)
-	return result.Data.Status, result.Data.RejectReason, err
+	return result.Data, err
 }
 
 // ShopMiniappCertificate 自定义交易组件小程序资质
