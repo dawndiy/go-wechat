@@ -101,9 +101,10 @@ func (s *ShopComponentShopService) AccountGetBrandList(ctx context.Context) ([]S
 }
 
 type ShopAccountInfo struct {
-	ServiceAgentPath  string `json:"service_agent_path"`
-	ServiceAgentPhone string `json:"service_agent_phone"`
-	ServiceAgentType  []int  `json:"service_agent_type"`
+	ServiceAgentPath        string                                  `json:"service_agent_path"`
+	ServiceAgentPhone       string                                  `json:"service_agent_phone"`
+	ServiceAgentType        []int                                   `json:"service_agent_type"`
+	DefaultReceivingAddress *ShopAccountInfoDefaultReceivingAddress `json:"default_receiving_address"`
 }
 
 // AccountGetInfo 获取商家信息
